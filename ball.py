@@ -1,3 +1,5 @@
+import numpy as np
+
 class Ball:
 	xvel = 0.0
 	yvel = 0.0
@@ -9,20 +11,24 @@ class Ball:
 		self.number = number
 		self.xpos = xpos
 		self.ypos = ypos
+		self.inmotion = 0
 
-	def collideBall(power, angle, xoffset, yoffset):
-		time = time() #Time at hit
-		xvel += power*cos(angle)
-		yvel += power*sin(angle)
+	def collideBall(vel, angle, xoffset, yoffset):
+		self.inmotion = 1
+		self.time = time() #Time at hit
+		self.xvel += vel*np.cos(angle)
+		self.yvel += vel*np.sin(angle)
 
 	def currentVel():
 		cur_time = time()
-		cur_xvel = xvel - FRICTION*G*(cur_time-time)
-		cur_yvel = yvel - FRICTION*G*(cur_time-time)
+		elapsed_time = self.time - cur_time
+		cur_xvel = self.xvel - FRICTION*G*elapsed_time
+		cur_yvel = self.yvel - FRICTION*G*elapsed_time
 		return cur_xvel, cur_yvel
 	
 	def currentPos():
 		cur_time = time()
-		cur_xpos = xvel*(cur_time-time) - 0.5*FRICTION*G*(cur_time-time)*(cur_time-time)
-		cur_ypos = yvel*(cur_time-time) - 0.5*FRICTION*G*(cur_time-time)*(cur_time-time)
+		elapsed_time = self.time - cur_time
+		cur_xpos = self.xvel*elapsed_time - 0.5*FRICTION*G*np.square(elapsed_time)
+		cur_ypos = self.yvel*elapsed_time - 0.5*FRICTION*G*np.square(elapsed_time)
 		return cur_xpos, cur_ypos
